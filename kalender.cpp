@@ -4,60 +4,76 @@ using namespace std;
 class Kalenderdatum
 {
 	private:
-		//Variablen zum speichern des aktuellen Datums;
-		int day, month, year;
-		//Variable für die while Schleife
-		int i=1;
+		//Int zum Durchzählen der Tage ab 1.1. -4712 Chr.;
+		long int lt;
+		//Variablen für die Umrechnung in Gregorianischen und Julianischen Kalender
+		int day_greg, day_jul, month_greg, month_jul, year_greg, year_jul;
 	public:
 		//Konstruktor für Aufruf mit Konsoleneingabe
 		Kalenderdatum()
 		{
-			//Schleife, die solange eingeben lässt bis ein gültiges Datum vorliegt
-			while ( i==1 )
-			{
-				cout << "Bitte hintereinander Tag, Monat und Jahr eingeben:\n";
-				cin >> this->day;
-				cin >> this->month;
-				cin >> this->year;
-				//Checkt ob das eingegebene Datum korrekt ist
-				if ( (month < 13 && month > 0)											//Checkt ob Monat zwischen 1-12 liegt
-					&& ((month==1||month==3||month==5||month==7||month==8||month==11||month==12) && day<32 && day>0)	//Checkt für entsprechende Monte ob Tage zw 1-31 liegen
-					|| (month==2 && day<29 && day>0)									//Checkt ob für Februar Tage zw 1-28 liegen
-					|| ((month==4||month==6||month==9||month==11) && day<31 && day >0))					//Checkt ob in restlichen Monaten tage zw 1-30 liegen
-				{
-					cout << "Das eingegebene Datum ist korrekt\n";
-					i = 0;
-				}
-				else
-				{
-					cout << "Kein gültiges Datum eingegeben!\n";
-					i = 1;
-				}
-			}
+			
 		}
 		//Konstruktor für normalen Aufruf
-		Kalenderdatum( int day, int month, int year )
+		Kalenderdatum( int lt )
 		{
-			this->day = day;
-			this->month = month;
-			this->year = year;
+			this->lt = lt;
 		}
-		//Testausgabe des Datums
-		void ausgabe()
+		//Umrechnung von Datum im Julianischem Kalender in laufende Tage lt
+		long int jul_to_lt(){
+			//Ausgabevariable
+			long int rueck, tag, jahr;
+			//Hilfsvariablen für die Rechnungen
+			int sk, mk, N4, R4, N1;
+			//Setzt sk auf 1 wenn Schaltjahr und Monat nach Februar liegt
+			if ( month_jul > 2 && (year_jul<0 && (year_jul%4==1)) || (year_jul>0 && (year_jul%4==0)) ){
+				sk=1;
+			}
+			else{
+				sk=0;
+			}
+			//Setzt die Korrektur der Tage je nach Monat
+			switch (month_jul){
+				case 1 : mk=-1;
+				case 3 : mk=-2;
+				case 4 : mk=-1;
+				case 5 : mk=-1;
+				case 8 : mk=1;
+				case 9 : mk=2;
+				case 10 : mk=2;
+				case 11 : mk=3;
+				case 12 : mk=3;
+				default : mk=0;
+			}
+			tag = day_jul + 30*(month_jul-1) + sk + mk;
+			jahr = 4715 + year_jul;
+			N4 = jahr/4;
+			N1 = jahr%4;
+			rueck = 1461*N4 + 365*(N1-3) + tag;
+			return rueck;
+		}
+		//Funktionen zum einlesen und ausgeben der Daten
+		void ausgabe_greg()
 		{
-			cout << "Datum:  " << day << "." << month << "." << year << "\n";
+			cout << "Gregorianisches Datum:  " << day_greg << "." << month_greg << "." << year_greg << "\n";
 		}
-
+		void ausgabe_jul()
+		{
+			cout << "Julianisches Datum:  " << day_jul << "." << month_jul << "." << year_jul << "\n";
+		}
+		void einlesen_jul(){
+			cout << "Geben Sie ein Julianisches Datum ein.\n Bitte hintereinander Tag, Monat und Jahr eingeben:\n";
+			cin >> day_jul;
+			cin >> month_jul;
+			cin >> year_jul;
+		}
+		void jul_to_days(){
+			cout << "Für das eingegebene Julianische Datum sind seit dem 01.01.4713 v.Chr. " << jul_to_lt() << " Tage vergangen.\n";
+		}
 };
 
-
-int main ()
-{
-	//Erstelle Datum ohne Variablen
-	Kalenderdatum date1;
-	//Erstelle Datum nach Vorgabe
-	Kalenderdatum date2(27,04,1993);
-	//Testausgabe
-	date1.ausgabe();
-	date2.ausgabe();
+int main (){
+		Kalenderdatum date1(34324234);
+		date1.einlesen_jul();
+		date1.jul_to_days();
 }
