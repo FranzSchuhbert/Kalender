@@ -4,10 +4,10 @@ using namespace std;
 
 class Kalenderdatum
 {
-	private:
+	public:
 		//Int zum Durchzählen der Tage ab 1.1. -4712 Chr.;
 		long int lt;
-		
+	private:	
 		//Variablen für die Umrechnung in Gregorianischen und Julianischen Kalender
 		int day_greg, day_jul, month_greg, month_jul, year_greg, year_jul;
 		
@@ -247,14 +247,15 @@ class Kalenderdatum
 		
 		
 	public:
+	
 		//Entscheidung was man eingeben will um Umrechnung in laufende Tage lt
-		void inputform (){
-		int decide1 = 4;
+		void inputform(){
+		int decide = 4;
 		cout << "Was möchten Sie eingeben? Bitte wählen Sie\n1) Für ein Datum im gregorianischen Kalender\n2) Für ein Datum im julianischen Kalender\n3) Für eine Anzahl von vergangenen Tagen seit dem 01.01.4713 v.Chr.\n";
-		while ( (decide1<1)||(decide1>3)){
-		cin >> decide1;
+		while ( (decide<1)||(decide>3)){
+		cin >> decide;
 		cout << "\n";
-		switch ( decide1 ){
+		switch ( decide ){
 		case 1 :	einlesen_greg();
 				greg_to_lt();
 				break;
@@ -270,12 +271,12 @@ class Kalenderdatum
 		
 		//Entscheidung was man ausgeben will und Berechnung aus laufenden Tagen lt
 		void outputform(){
-		int decide2 = 4;
+		int decide = 4;
 		cout << "Was möchten Sie ausgeben? Bitte wählen Sie\n1) Für ein Datum im gregorianischen Kalender\n2) Für ein Datum im julianischen Kalender\n3) Für eine Anzahl von vergangenen Tagen seit dem 01.01.4713 v.Chr.\n";
-		while ( (decide2<1)||(decide2>3)){
-		cin >> decide2;
+		while ( (decide<1)||(decide>3)){
+		cin >> decide;
 		cout << "\n";
-		switch ( decide2 ){
+		switch ( decide ){
 		case 1 :	lt_to_greg();
 				ausgabe_greg();
 				break;
@@ -288,3 +289,23 @@ class Kalenderdatum
 		}
 		}
 };
+
+
+
+//Operator der Abstand zwischen zwei Kalenderdaten berechnet in Tagen
+long int operator - ( Kalenderdatum X, Kalenderdatum Y ){
+	long int abstand;
+	abstand = abs( X.lt - Y.lt );
+	return abstand;
+}
+
+
+//Gibt Datum in Tagen aus für unter 1000 Tage, sonst in Jahren
+void ausgabe_abstand(Kalenderdatum X, Kalenderdatum Y){
+	if ( X - Y > 1000 ){
+	cout << "Die eingegebenen Daten liegen " << (X - Y) / 365.2425 << " Jahre auseinander.\n";
+	}
+	else{
+	cout << "Die eingegebenen Daten liegen " << X-Y << " Tage auseinander.\n";
+	}
+}
