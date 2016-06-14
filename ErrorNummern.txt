@@ -1,0 +1,20 @@
+In diesem File sind alle Error Nummer mit deren Bedeutung gespeichert.
+
+
+Error Nr. 1:
+Beim Erstellen eines Objektes der Klasse Kalenderdatum mit einer Datumszuweisung wurde nicht korrekt "g"/"j" für gregorianisches/julianisches Datum als viertes Argument eingegeben.
+Beispiel:		 Kalenderdatum kalender1(27, 04, 1993, "g");
+____________________________________________________________________________________________________________________________________________________________________________________
+
+
+
+Error Nr. 2:
+Falsche Auswahl bei Abfrage nach Art der Eingabe (jul., greg. oder Anzahl der Tage). Nur 1, 2 oder 3 möglich
+____________________________________________________________________________________________________________________________________________________________________________________
+
+
+
+Error Nr. 3:
+Falsche Auswahl bei Abfrage nach Art der Ausgabe (jul., greg. oder Anzahl der Tage). Nur 1, 2 oder 3 möglich
+____________________________________________________________________________________________________________________________________________________________________________________
+

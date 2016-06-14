@@ -6,6 +6,9 @@ int main (){
 		//Erstelle zwei Kalenderobjekte
 		Kalenderdatum date1;
 		Kalenderdatum date2;
+		//Test für Error Nr. 1
+		//Kalenderdatum date3(27, 04, 1993, "d");
+			
 		
 		
 		//Entscheidung was man machen will und ausführen
