@@ -1,14 +1,14 @@
-#include<kalender.h>
+#include "kalender.h"
 
 int* Kalenderdatum::easterdate(){
-	lt_to_greg();
+	int *date_greg = lt_to_greg(lt);
 	int a,b,c,d,e,k,m,n,p,q;
 	static int date [2];
 	
-	a	=	year_greg % 19;
-	b	=	year_greg % 4;
-	c	=	year_greg % 7;
-	k	=	year_greg / 100;
+	a	=	date_greg[3] % 19;
+	b	=	date_greg[3] % 4;
+	c	=	date_greg[3] % 7;
+	k	=	date_greg[3] / 100;
 	p	=	(8*k + 13) / 25;
 	q	=	k / 4;
 	m	=	(15 + k - p - q) % 30;
@@ -30,4 +30,4 @@ int* Kalenderdatum::easterdate(){
 		date[1] = 18;
 	}
 	return date;
-}
+};
