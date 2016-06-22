@@ -5,73 +5,14 @@
 class Kalenderdatum
 {
 private:
-	//Variablen für die Umrechnung in Gregorianischen und Julianischen Kalender
+	// Variablen für die Umrechnung in Gregorianischen und Julianischen Kalender
 	int day_greg, day_jul, month_greg, month_jul, year_greg, year_jul;
-	//Int zum Durchzählen der Tage ab 1.1.4712 v.Chr.
-	int lt;
-	
-	// Private Memberfunktionen die in den Public Funktionen verwendet werden
-	//Berechnet Monatskorrektur mk jeweils für Julianischen und Gregorianischen Kalender
-	int get_mk_jul();
-	int get_mk_greg();
-	//Umrechnung von Datum im Julianischem Kalender in laufende Tage lt
-	void jul_to_lt();	
-	//Umrechnung von Datum im Gregorianischen Kalender in laufende Tage lt
-	void greg_to_lt();
-	//Umrechnung von laufendem Tag ab 1.1.... in jul. Datum
-	void lt_to_jul();	
-	//Umrechnung von laufendem Tag ab 1.1.... in greg. Datum
-	void lt_to_greg();
-	
-	
-	//Funktionen zum einlesen und ausgeben der Daten
-	void einlesen_jul(){
-		std::cout << "Geben Sie ein Julianisches Datum ein.\nBitte hintereinander Tag, Monat und Jahr eingeben:\n";
-		std::cin >> day_jul;
-		std::cin >> month_jul;
-		std::cin >> year_jul;
-		std::cout << "\n";
-		jul_to_lt();
-	}
-	void einlesen_greg(){
-		std::cout << "Geben Sie ein Gregorianisches Datum ein.\nBitte hintereinander Tag, Monat und Jahr eingeben:\n";
-		std::cin >> day_greg;
-		std::cin >> month_greg;
-		std::cin >> year_greg;
-		std::cout << "\n";
-		greg_to_lt();
-	}
-	void einlesen_lt(){
-		std::cout << "Geben Sie eine Anzahl an Tagen ein, die seit dem 01.01.4715 v.Chr. vergangen sind.\n";
-		std::cin >> lt;
-		std::cout << "\n";
-	}
-	void ausgabe_lt(){
-		std::cout << "Für Ihre Eingabe sind seit dem 01.01.4713 v.Chr. genau " << lt << " Tage vergangen.\n";
-	}
-	void ausgabe_jul(){
-		if (year_jul>0){
-		std::cout << "Im julianischen Kalender ist das der " << day_jul << "." << month_jul << "." << year_jul << " n.Chr.\n";
-		}
-		else{
-		std::cout << "Im julianischen Kalender ist das der " << day_jul << "." << month_jul << "." << abs(year_jul) << " v.Chr.\n";
-		}
-	}
-	void ausgabe_greg(){
-		if (year_greg>0){
-		std::cout << "Im gregorianischen Kalender ist das der " << day_greg << "." << month_greg << "." << year_greg << " n.Chr.\n";
-		}
-		else{
-		std::cout << "Im gregorianischen Kalender ist das der " << day_greg << "." << month_greg << "." << abs(year_greg) << " v.Chr.\n";
-		}
-	}
-
-	
-	
+	// Int zum Durchzählen der Tage ab 1.1.4712 v.Chr.
+	long int lt;
 	//Emergency function
 	void emergencyStop (int i) const;
-public:
-	//Konstruktoren und Destruktoren
+public:	
+	// Konstruktoren und Destruktoren
 	Kalenderdatum()			{this->lt = 1;}
 	Kalenderdatum( int lt )		{this->lt = lt;}
 	Kalenderdatum( int , int , int , std::string );
@@ -82,44 +23,32 @@ public:
 	// Access Methods
 	long int tage () const { return this->lt; }
 	
-	//Entscheidung was man eingeben will um Umrechnung in laufende Tage lt
-	void inputform(){
-		std::cout << "Was möchten Sie eingeben? Bitte wählen Sie\n1) Für ein Datum im gregorianischen Kalender\n2) Für ein Datum im julianischen Kalender\n3) Für eine Anzahl von vergangenen Tagen seit dem 01.01.4713 v.Chr.\n";
-		int decide;
-		std::cin >> decide;
-		std::cout << "\n";
-		switch ( decide ){
-			case 1 :	einlesen_greg();
-					break;
-			case 2 :	einlesen_jul();
-					break;
-			case 3 :	einlesen_lt(); break;
-			default :	emergencyStop(2);
-			}
-	}
-	
-	
-	//Entscheidung was man ausgeben will und Berechnung aus laufenden Tagen lt
-	void outputform(){
-		int decide;
-		std::cout << "Was möchten Sie ausgeben? Bitte wählen Sie\n1) Für ein Datum im gregorianischen Kalender\n2) Für ein Datum im julianischen Kalender\n3) Für eine Anzahl von vergangenen Tagen seit dem 01.01.4713 v.Chr.\n";
-		std::cin >> decide;
-		std::cout << "\n";
-		switch ( decide ){
-			case 1 :	lt_to_greg();
-					ausgabe_greg();
-					break;
-			case 2 : 	lt_to_jul();
-					ausgabe_jul();
-					break;
-			case 3 : 	ausgabe_lt(); break;
-			default : 	emergencyStop(3);
-		}
-	}
+	// Berechnet Monatskorrektur
+	int get_mk_jul();
+	int get_mk_greg();
+	// Umrechnungen zwischen den verschiedenen Kalendern
+	long int jul_to_lt(int, int, int);	
+	long int greg_to_lt(int, int, int);
+	void lt_to_jul();	
+	void lt_to_greg();
+	// Funktionen zum einlesen und ausgeben der Daten
+	void einlesen_jul();
+	void einlesen_greg();
+	void einlesen_lt();
+	void ausgabe_lt();
+	void ausgabe_jul();
+	void ausgabe_greg();
+	// Entscheidung was man eingeben/ausgeben will
+	void inputform();
+	void outputform();
 	
 	// Berechnung des Osterdatums
 	int* easterdate();
 };
+
+
+
+
 
 // Error exit
 class KalenderdatumException : std::exception{};
@@ -128,26 +57,18 @@ void Kalenderdatum::emergencyStop (int i) const{
 	throw new KalenderdatumException;
 }
 
-
 // globaler Operator der Abstand zwischen zwei Kalenderdaten berechnet in Tagen
 long int operator - (const Kalenderdatum X, const Kalenderdatum Y ){
 	return abs( X.tage() - Y.tage() );
 }
 
-
 // Operatoren die auf private Member zugreifen dürfen
 Kalenderdatum::Kalenderdatum( int a, int b, int c, std::string d){
 	if ( d == "j" ){
-		day_jul		= a;
-		month_jul	= b;
-		year_jul	= c;
-		jul_to_lt();
+		jul_to_lt(a, b, c);
 	}
 	else if ( d == "g" ){
-		day_greg	= a;
-		month_greg	= b;
-		year_greg	= c;
-		greg_to_lt();
+		greg_to_lt(a, b, c);
 	}
 	else { emergencyStop(1); }
 }
@@ -183,11 +104,11 @@ int Kalenderdatum::get_mk_greg(){
 	}
 	return mk;
 }
-void Kalenderdatum::jul_to_lt(){
+long int Kalenderdatum::jul_to_lt( int a, int b, int c){
 	//Hilfsvariablen für die Rechnungen
 	int sk, mk, N4, N1, tag, jahr;
 	//Setzt sk auf 1 wenn Schaltjahr und Monat nach Februar liegt
-	if ( month_jul > 2 && ((year_jul<0 && (abs(year_jul%4)==1)) || (year_jul>0 && (year_jul%4==0))) ){
+	if ( b > 2 && ((c<0 && (abs(c%4)==1)) || (c>0 && (c%4==0))) ){
 		sk=1;
 	}
 	else{
@@ -195,9 +116,9 @@ void Kalenderdatum::jul_to_lt(){
 	}
 	//Setzt die Korrektur der Tage je nach Monat
 	mk = get_mk_jul();
-	tag = day_jul + 30*(month_jul-1) + sk + mk;
-	jahr = 4715 + year_jul;
-	if ( year_jul < 0 ){
+	tag = a + 30*(b-1) + sk + mk;
+	jahr = 4715 + c;
+	if ( c < 0 ){
 	jahr++;}
 	N4 = jahr/4;
 	N1 = jahr%4;
@@ -206,20 +127,21 @@ void Kalenderdatum::jul_to_lt(){
 		tag = 365;
 	}
 	lt = 1461*N4 + 365*(N1-3) + tag;
+	return lt;
 }
-void Kalenderdatum::greg_to_lt(){
+long int Kalenderdatum::greg_to_lt(int a, int b, int c){
 	//Hilfsvariablen für die Rechnungen
 	int sk, mk, N400, R400, N100, R100, N1, N4, tag, jahr;
 	//Setzt sk auf 1 wenn Schaltjahr und Monat nach Februar liegt
-	if ( month_greg > 2 && ( (year_greg%4==0)&&( (year_greg%100!=0)||((year_greg%100==0)&&(year_greg%400==0))) ) ){
+	if ( b > 2 && ( (c%4==0)&&( (c%100!=0)||((c%100==0)&&(c%400==0))) ) ){
 		sk=1;
 	}
 	else{
 		sk=0;
 	}
 	mk = get_mk_greg();
-	tag = day_greg + 30*(month_greg-1) + sk + mk;
-	jahr = year_greg -1;
+	tag = a + 30*(b-1) + sk + mk;
+	jahr = c -1;
 	N400 = jahr / 400;
 	R400 = jahr % 400;
 	N100 = R400 / 100;
@@ -227,6 +149,7 @@ void Kalenderdatum::greg_to_lt(){
 	N4 = R100 / 4;
 	N1 = R100 % 4;
 	lt = 1721426 + N400*146097 + N100* 36524 + N4 * 1461 + N1*365 + tag;
+	return lt;
 }
 void Kalenderdatum::lt_to_jul(){
 	//Hilfsvariablen
@@ -306,36 +229,75 @@ void ausgabe_abstand(Kalenderdatum X, Kalenderdatum Y){
 	std::cout << "Die eingegebenen Daten liegen " << X-Y << " Tage auseinander.\n";
 	}
 }
-
-int* Kalenderdatum::easterdate(){
-	lt_to_greg();
-	int a,b,c,d,e,k,m,n,p,q;
-	static int date [2];
-	
-	a	=	year_greg % 19;
-	b	=	year_greg % 4;
-	c	=	year_greg % 7;
-	k	=	year_greg / 100;
-	p	=	(8*k + 13) / 25;
-	q	=	k / 4;
-	m	=	(15 + k - p - q) % 30;
-	d	=	(19*a + m) % 30;
-	n	=	(4 + k - q) % 7;
-	e	=	(2*b + 4*c + 6*d + n) % 7;
-	if ( 22 + d + e < 32){
-		date[1]	= 22 + d + e;
-		date[2]	= 3;
-	}
-	else {
-		date[1] = d + e - 9;
-		date[2] = 4;
-	}
-	if ( (date[1] == 26) && (date[2] == 4)){
-		date[1] = 19;
-	}
-	if ( (date[1]==25) && (date[2]==4) && (d==28) && (e==6) && (((11*m + 11) % 30) < 19) ){
-		date[1] = 18;
-	}
-	return date;
+void Kalenderdatum::einlesen_jul(){
+	int day_jul, month_jul, year_jul;
+	std::cout << "Geben Sie ein Julianisches Datum ein.\nBitte hintereinander Tag, Monat und Jahr eingeben:\n";
+	std::cin >> day_jul;
+	std::cin >> month_jul;
+	std::cin >> year_jul;
+	std::cout << "\n";
+	jul_to_lt(day_jul, month_jul, year_jul);
 }
-	
+void Kalenderdatum::einlesen_greg(){
+	int day_greg, month_greg, year_greg;
+	std::cout << "Geben Sie ein Gregorianisches Datum ein.\nBitte hintereinander Tag, Monat und Jahr eingeben:\n";
+	std::cin >> day_greg;
+	std::cin >> month_greg;
+	std::cin >> year_greg;
+	std::cout << "\n";
+	greg_to_lt(day_greg, month_greg, year_greg);
+}
+void Kalenderdatum::einlesen_lt(){
+	std::cout << "Geben Sie eine Anzahl an Tagen ein, die seit dem 01.01.4715 v.Chr. vergangen sind.\n";
+	std::cin >> lt;
+	std::cout << "\n";
+}
+void Kalenderdatum::ausgabe_lt(){
+	std::cout << "Für Ihre Eingabe sind seit dem 01.01.4713 v.Chr. genau " << lt << " Tage vergangen.\n";
+}
+void Kalenderdatum::ausgabe_jul(){
+	if (year_jul>0){
+	std::cout << "Im julianischen Kalender ist das der " << day_jul << "." << month_jul << "." << year_jul << " n.Chr.\n";
+	}
+	else{
+	std::cout << "Im julianischen Kalender ist das der " << day_jul << "." << month_jul << "." << abs(year_jul) << " v.Chr.\n";
+	}
+}
+void Kalenderdatum::ausgabe_greg(){
+	if (year_greg>0){
+	std::cout << "Im gregorianischen Kalender ist das der " << day_greg << "." << month_greg << "." << year_greg << " n.Chr.\n";
+	}
+	else{
+	std::cout << "Im gregorianischen Kalender ist das der " << day_greg << "." << month_greg << "." << abs(year_greg) << " v.Chr.\n";
+	}
+}
+void Kalenderdatum::inputform(){
+	std::cout << "Was möchten Sie eingeben? Bitte wählen Sie\n1) Für ein Datum im gregorianischen Kalender\n2) Für ein Datum im julianischen Kalender\n3) Für eine Anzahl von vergangenen Tagen seit dem 01.01.4713 v.Chr.\n";
+	int decide;
+	std::cin >> decide;
+	std::cout << "\n";
+	switch ( decide ){
+		case 1 :	einlesen_greg();
+				break;
+		case 2 :	einlesen_jul();
+				break;
+		case 3 :	einlesen_lt(); break;
+		default :	emergencyStop(2);
+		}
+}
+void Kalenderdatum::outputform(){
+	int decide;
+	std::cout << "Was möchten Sie ausgeben? Bitte wählen Sie\n1) Für ein Datum im gregorianischen Kalender\n2) Für ein Datum im julianischen Kalender\n3) Für eine Anzahl von vergangenen Tagen seit dem 01.01.4713 v.Chr.\n";
+	std::cin >> decide;
+	std::cout << "\n";
+	switch ( decide ){
+		case 1 :	lt_to_greg();
+				ausgabe_greg();
+				break;
+		case 2 : 	lt_to_jul();
+				ausgabe_jul();
+				break;
+		case 3 : 	ausgabe_lt(); break;
+		default : 	emergencyStop(3);
+	}
+}
