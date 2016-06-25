@@ -1,3 +1,10 @@
+/**********************************************************************************************************************************
+David Eiber, Daniel Lang
+Blatt 1, Aufgabe 1-3, Kalenderklasse
+C++ Kurs Sommersemester 2016
+**********************************************************************************************************************************/
+
+
 #include<iostream>
 #include<math.h>
 #include<string>
@@ -5,46 +12,56 @@
 class Kalenderdatum
 {
 private:
-	// Int zum Durchzählen der Tage ab 1.1.4712 v.Chr.
+	// Memberfeld
 	long int lt;
 	// Error exception
 	void emergencyStop (int i) const;
 public:	
-	// Konstruktoren und Destruktoren
-	Kalenderdatum()			{this->lt = 1;}
+	// Konstruktoren, Destruktoren und Assignment Operator
+	Kalenderdatum()			{this->lt = 1;}	
 	Kalenderdatum( int lt )		{this->lt = lt;}
 	Kalenderdatum( int , int , int , std::string );
+	Kalenderdatum(const Kalenderdatum &x) { lt=x.lt; }		// Copy Constructor
+	~Kalenderdatum();						// Destructor
+	Kalenderdatum & operator= (const Kalenderdatum &x);		// Assignment Operator
 	
-	// Big Three
 	
-	
-	// Access Methods
-	long int tage () const { return this->lt; }
-	
-	// Berechnet Monatskorrektur
-	int get_mk_jul(int);
+	// Membermethoden
+	long int tage () const { return this->lt; }			// Access Method
+	int get_mk_jul(int);						// Berechnet Monatskorrektur
 	int get_mk_greg(int);
-	// Umrechnungen zwischen den verschiedenen Kalendern
+	/* Umrechnungen zwischen den verschiedenen Kalendern. Erweiterungen um andere Kalender leicht möglich indem man hier einfach 
+	Funktionen einfügt die die jeweiligen Kalender in lt umrechnen und umgekehrt.*/
 	long int jul_to_lt(int, int, int);	
 	long int greg_to_lt(int, int, int);
 	int* lt_to_jul(long int);	
 	int* lt_to_greg(long int);
-	// Funktionen zum Einlesen und Ausgeben der Daten
-	long int einlesen_jul();
+	long int einlesen_jul();					// Funktionen zum Einlesen und Ausgeben der Daten
 	long int einlesen_greg();
 	long int einlesen_lt();
 	void ausgabe_lt();
 	void ausgabe_jul();
 	void ausgabe_greg();
-	// Entscheidung was man eingeben/ausgeben will
-	void inputform();
+	void inputform();						// Entscheidung was man eingeben/ausgeben will
 	void outputform();
-	
-	// Berechnung des Osterdatums
-	int* easterdate();
+	int* easterdate(long int);					// Berechnung des Osterdatums
+	std::string wochentag(long int);				// Berechnung des Wochentages
+	std::string wochentag(int, int, int, std::string);
+	int* weiberfastnacht(long int);					// Berechnung der Feiertage die von Ostern abhängen
+	int* rosenmontag(long int);
+	int* fastnachtdienstag(long int);
+	int* aschermittwoch(long int);
+	int* gruendonnerstag(long int);
+	int* karfreitag(long int);
+	int* ostermontag(long int);
+	int* christihimmel(long int);
+	int* mariahimmel(long int);
+	int* pfingstsonntag(long int);
+	int* pfingstmontag(long int);
+	int* fronleichnam(long int);
+	Kalenderdatum operator+(long int);				// Additionsoperator
+	Kalenderdatum operator-(long int);				// Subtraktionsoperator
 };
-
-
 
 
 
@@ -55,21 +72,30 @@ void Kalenderdatum::emergencyStop (int i) const{
 	throw new KalenderdatumException;
 }
 
-// globaler Operator der Abstand zwischen zwei Kalenderdaten berechnet in Tagen
-long int operator - (const Kalenderdatum X, const Kalenderdatum Y ){
+// globale Operatoren
+long int operator- (const Kalenderdatum X, const Kalenderdatum Y ){
 	return abs( X.tage() - Y.tage() );
 }
 
 // Operatoren die auf private Member zugreifen dürfen
+Kalenderdatum Kalenderdatum::operator+ (long int x){
+	lt = lt + x;
+	return *this;
+}
+Kalenderdatum Kalenderdatum::operator- (long int x){
+	lt = lt - x;
+	return *this;
+}
 Kalenderdatum::Kalenderdatum( int a, int b, int c, std::string d){
 	if ( d == "j" ){
-		jul_to_lt(a, b, c);
+		lt = jul_to_lt(a, b, c);
 	}
 	else if ( d == "g" ){
-		greg_to_lt(a, b, c);
+		lt = greg_to_lt(a, b, c);
 	}
 	else { emergencyStop(1); }
 }
+Kalenderdatum::~Kalenderdatum(){}
 int Kalenderdatum::get_mk_jul(int b){
 	int mk;
 	switch (b){
@@ -85,6 +111,12 @@ int Kalenderdatum::get_mk_jul(int b){
 		default : mk=0;
 	}
 	return mk;
+}
+Kalenderdatum & Kalenderdatum::operator= (const Kalenderdatum &x){
+	if (this != &x){
+		lt = x.lt;
+	}
+	return *this;
 }
 int Kalenderdatum::get_mk_greg(int b){
 	int mk;
@@ -310,4 +342,197 @@ void Kalenderdatum::outputform(){
 		case 3 : 	ausgabe_lt(); break;
 		default : 	emergencyStop(3);
 	}
+}
+std::string Kalenderdatum::wochentag(long int lt){
+	int x = (lt + 0 ) % 7;
+	std::string a;
+	switch ( x ) {
+	case 0 : 	a = "Montag";		break;
+	case 1 : 	a = "Dienstag";		break;
+	case 2 : 	a = "Mittwoch";		break;
+	case 3 : 	a = "Donnerstag";	break;
+	case 4 : 	a = "Freitag";		break;
+	case 5 : 	a = "Samstag";		break;
+	case 6 : 	a = "Sonntag";		break;
+	}
+	return a;
+}
+std::string Kalenderdatum::wochentag(int a2, int b, int c, std::string d){
+	Kalenderdatum x(a2, b, c, d);
+	int y = (x.lt + 0) % 7;
+	std::string a;
+	switch ( y ) {
+	case 0 : 	a = "Montag";		break;
+	case 1 : 	a = "Dienstag";		break;
+	case 2 : 	a = "Mittwoch";		break;
+	case 3 : 	a = "Donnerstag";	break;
+	case 4 : 	a = "Freitag";		break;
+	case 5 : 	a = "Samstag";		break;
+	case 6 : 	a = "Sonntag";		break;
+	}
+	return a;
+}
+int* Kalenderdatum::easterdate(long int lt){
+	int *date_greg = lt_to_greg(lt);
+	int a,b,c,d,e,k,m,n,p,q;
+	static int date [3];
+	
+	a	=	date_greg[3] % 19;
+	b	=	date_greg[3] % 4;
+	c	=	date_greg[3] % 7;
+	k	=	date_greg[3] / 100;
+	p	=	(8*k + 13) / 25;
+	q	=	k / 4;
+	m	=	(15 + k - p - q) % 30;
+	d	=	(19*a + m) % 30;
+	n	=	(4 + k - q) % 7;
+	e	=	(2*b + 4*c + 6*d + n) % 7;
+	if ( 22 + d + e < 32){
+		date[1]	= 22 + d + e;
+		date[2]	= 3;
+	}
+	else {
+		date[1] = d + e - 9;
+		date[2] = 4;
+	}
+	if ( (date[1] == 26) && (date[2] == 4)){
+		date[1] = 19;
+	}
+	if ( (date[1]==25) && (date[2]==4) && (d==28) && (e==6) && (((11*m + 11) % 30) < 19) ){
+		date[1] = 18;
+	}
+	date[3] = date_greg[3];
+	return date;
+}
+int* Kalenderdatum::weiberfastnacht(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x - 52;
+	date = x.lt_to_greg(lt);
+	static int weiberfastnacht [2];
+	weiberfastnacht[1] = date[1];
+	weiberfastnacht[2] = date[2];
+	weiberfastnacht[3] = date[3];
+	return weiberfastnacht;
+}
+int* Kalenderdatum::rosenmontag(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x - 48;
+	date = x.lt_to_greg(x.lt);
+	static int rosenmontag [2];
+	rosenmontag[1] = date[1];
+	rosenmontag[2] = date[2];
+	rosenmontag[3] = date[3];
+	return rosenmontag;
+}
+int* Kalenderdatum::fastnachtdienstag(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x - 47;
+	date = x.lt_to_greg(x.lt);
+	static int fastnachtdienstag [2];
+	fastnachtdienstag[1] = date[1];
+	fastnachtdienstag[2] = date[2];
+	fastnachtdienstag[3] = date[3];
+	return fastnachtdienstag;
+}
+int* Kalenderdatum::aschermittwoch(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x - 46;
+	date = x.lt_to_greg(x.lt);
+	static int aschermittwoch [2];
+	aschermittwoch[1] = date[1];
+	aschermittwoch[2] = date[2];
+	aschermittwoch[3] = date[3];
+	return aschermittwoch;
+}
+int* Kalenderdatum::gruendonnerstag(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x - 3;
+	date = x.lt_to_greg(x.lt);
+	static int gruendonnerstag [2];
+	gruendonnerstag[1] = date[1];
+	gruendonnerstag[2] = date[2];
+	gruendonnerstag[3] = date[3];
+	return gruendonnerstag;
+}
+int* Kalenderdatum::karfreitag(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x - 2;
+	date = x.lt_to_greg(x.lt);
+	static int karfreitag [2];
+	karfreitag[1] = date[1];
+	karfreitag[2] = date[2];
+	karfreitag[3] = date[3];
+	return karfreitag;
+}
+int* Kalenderdatum::ostermontag(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x + 1;
+	date = x.lt_to_greg(x.lt);
+	static int ostermontag [2];
+	ostermontag[1] = date[1];
+	ostermontag[2] = date[2];
+	ostermontag[3] = date[3];
+	return ostermontag;
+}
+int* Kalenderdatum::christihimmel(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x + 39;
+	date = x.lt_to_greg(x.lt);
+	static int christihimmel [2];
+	christihimmel[1] = date[1];
+	christihimmel[2] = date[2];
+	christihimmel[3] = date[3];
+	return christihimmel;
+}
+int* Kalenderdatum::mariahimmel(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x + 46;
+	date = x.lt_to_greg(x.lt);
+	static int mariahimmel [2];
+	mariahimmel[1] = date[1];
+	mariahimmel[2] = date[2];
+	mariahimmel[3] = date[3];
+	return mariahimmel;
+}
+int* Kalenderdatum::pfingstsonntag(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x + 49;
+	date = x.lt_to_greg(x.lt);
+	static int pfingstsonntag [2];
+	pfingstsonntag[1] = date[1];
+	pfingstsonntag[2] = date[2];
+	pfingstsonntag[3] = date[3];
+	return pfingstsonntag;
+}
+int* Kalenderdatum::pfingstmontag(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x + 50;
+	date = x.lt_to_greg(x.lt);
+	static int pfingstmontag [2];
+	pfingstmontag[1] = date[1];
+	pfingstmontag[2] = date[2];
+	pfingstmontag[3] = date[3];
+	return pfingstmontag;
+}
+int* Kalenderdatum::fronleichnam(long int lt){
+	int* date = easterdate(lt);
+	Kalenderdatum x(date[1], date[2], date[3], "g");
+	x = x + 60;
+	date = x.lt_to_greg(x.lt);
+	static int fronleichnam [2];
+	fronleichnam[1] = date[1];
+	fronleichnam[2] = date[2];
+	fronleichnam[3] = date[3];
+	return fronleichnam;
 }
