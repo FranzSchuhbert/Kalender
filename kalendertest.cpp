@@ -48,8 +48,10 @@ int main (){
 		long int tage = date4.tage();
 		ostern = date4.easterdate(tage);
 		cout << "Ostern fällt im Jahr " << ostern[3] << " auf den " << ostern[1] << "." << ostern[2] << ".\n";
+		tage = date5.tage();
 		ostern = date5.easterdate(tage);
 		cout << "Ostern fällt im Jahr " << ostern[3] << " auf den " << ostern[1] << "." << ostern[2] << ".\n";
+		tage = date6.tage();
 		ostern = date6.easterdate(tage);
 		cout << "Ostern fällt im Jahr " << ostern[3] << " auf den " << ostern[1] << "." << ostern[2] << ".\n\n\n";
 		
