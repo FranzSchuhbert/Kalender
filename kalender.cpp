@@ -1,8 +1,8 @@
-#include "ostern.h"
+#include "kalender.h"
 using namespace std;
 
 int main (){
-	
+		
 		//Erstelle zwei Kalenderobjekte
 		Kalenderdatum date1;
 		Kalenderdatum date2;
@@ -15,7 +15,7 @@ int main (){
 		cout << "Ostern Fällt auf den " << ostern[1] << "." << ostern[2] << "\n";
 		*/
 		//Entscheidung was man machen will und ausführen
-		int decide = 3;
+		/*int decide = 3;
 		cout << "Was möchten Sie berechnen? Bitte wählen Sie\n1) Für das Umwandeln eines Datums in einen anderen Kalender\n2) Für die Berechnung eines Abstandes zweier Daten\n";
 		while ( (decide<1)||(decide>2)){
 			cin >> decide;
@@ -32,5 +32,7 @@ int main (){
 				break;
 		default : cout << "Ungültige Auswahl, bitte nochmal\n1) Für das Umwandeln eines Datums in eine andere Form\n2) Für die Berechnung eines Abstandes zweier Daten\n";
 			}
-		}
+		}*/
+		int x = validdate(29, 2, 1990, "j");
+		cout << x << "\n";
 }

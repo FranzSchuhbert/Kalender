@@ -30,6 +30,7 @@ public:
 	long int tage () const { return this->lt; }			// Access Method
 	int get_mk_jul(int);						// Berechnet Monatskorrektur
 	int get_mk_greg(int);
+	int validdate(int, int, int, std::string);					// Prüft eingegebenes Datum auf Korrektheit
 	/* Umrechnungen zwischen den verschiedenen Kalendern. Erweiterungen um andere Kalender leicht möglich indem man hier einfach 
 	Funktionen einfügt die die jeweiligen Kalender in lt umrechnen und umgekehrt.*/
 	long int jul_to_lt(int, int, int);	
@@ -133,6 +134,36 @@ int Kalenderdatum::get_mk_greg(int b){
 		default : mk=0;
 	}
 	return mk;
+}
+int validdate(int a, int b, int c, std::string d){
+	int x = 0;
+	if (c!=0){
+	switch ( b ){
+	case 1  :
+	case 3  :
+	case 5  :
+	case 7  :
+	case 8  :
+	case 10 :
+	case 12 : if ( (a>0) && (a<32) ){x = 1;}
+		else{x = 0;}	break;
+	case 4  :
+	case 6  :
+	case 9  :
+	case 11 : if ( (a>0) && (a<31) ){x = 1;}
+		else{x = 0;}	break;
+	case 2  : if ( d == "j"){
+			if ( ((c<0)&&(c%4==1)) || (((c>0)&&(c%4==0))&&((a>0)&&(a>30)))  ){x = 1; std::cout << "case 1.1\n";}
+			else if( (a>0)&&(a<29) ){x = 1; std::cout << "case 1.2\n";}
+			else{x = 0; std::cout << "case 1.3\n";}}
+		else if ( d == "g"){
+			if ( ((c%4==0)&&((c%100!=0)||(c%400==0))) && ((a>0)&&(a<30)) ){x = 1;}
+			else if( (a>0)&&(a<29) ){x = 1;}
+			else{x = 0;}}
+	default : x = 0;	break;
+	}
+	}
+	return x;
 }
 long int Kalenderdatum::jul_to_lt( int a, int b, int c){
 	//Hilfsvariablen für die Rechnungen
