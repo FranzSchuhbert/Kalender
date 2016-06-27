@@ -88,10 +88,10 @@ Kalenderdatum Kalenderdatum::operator- (long int x){
 	return *this;
 }
 Kalenderdatum::Kalenderdatum( int a, int b, int c, std::string d){
-	if ( d == "j" ){
+	if ( (d == "j") && (validdate(a, b, c, "j")==1) ){
 		lt = jul_to_lt(a, b, c);
 	}
-	else if ( d == "g" ){
+	else if ( (d == "g") && (validdate(a, b, c, "g")==1) ){ 
 		lt = greg_to_lt(a, b, c);
 	}
 	else { emergencyStop(1); }
@@ -135,7 +135,7 @@ int Kalenderdatum::get_mk_greg(int b){
 	}
 	return mk;
 }
-int validdate(int a, int b, int c, std::string d){
+int Kalenderdatum::validdate(int a, int b, int c, std::string d){
 	int x = 0;
 	if (c!=0){
 	switch ( b ){
@@ -153,19 +153,21 @@ int validdate(int a, int b, int c, std::string d){
 	case 11 : if ( (a>0) && (a<31) ){x = 1;}
 		else{x = 0;}	break;
 	case 2  : if ( d == "j"){
-			if ( ((c<0)&&(c%4==1)) || (((c>0)&&(c%4==0))&&((a>0)&&(a>30)))  ){x = 1; std::cout << "case 1.1\n";}
+			if ( ((c<0)&&(c%4==1)) || ((c>0)&&(c%4==0)&&(a>0)&&(a<30))  ){x = 1; std::cout << "case 1.1\n";}
 			else if( (a>0)&&(a<29) ){x = 1; std::cout << "case 1.2\n";}
 			else{x = 0; std::cout << "case 1.3\n";}}
 		else if ( d == "g"){
 			if ( ((c%4==0)&&((c%100!=0)||(c%400==0))) && ((a>0)&&(a<30)) ){x = 1;}
 			else if( (a>0)&&(a<29) ){x = 1;}
 			else{x = 0;}}
+				break;
 	default : x = 0;	break;
 	}
 	}
 	return x;
 }
 long int Kalenderdatum::jul_to_lt( int a, int b, int c){
+	if (validdate(a, b, c, "j")==1){
 	//Hilfsvariablen für die Rechnungen
 	int sk, mk, N4, N1, tag, jahr;
 	//Setzt sk auf 1 wenn Schaltjahr und Monat nach Februar liegt
@@ -188,9 +190,12 @@ long int Kalenderdatum::jul_to_lt( int a, int b, int c){
 		tag = 365;
 	}
 	lt = 1461*N4 + 365*(N1-3) + tag;
+	}
+	else{emergencyStop(2);}
 	return lt;
 }
 long int Kalenderdatum::greg_to_lt(int a, int b, int c){
+	if (validdate(a, b, c, "g")==1){
 	//Hilfsvariablen für die Rechnungen
 	int sk, mk, N400, R400, N100, R100, N1, N4, tag, jahr;
 	//Setzt sk auf 1 wenn Schaltjahr und Monat nach Februar liegt
@@ -210,6 +215,8 @@ long int Kalenderdatum::greg_to_lt(int a, int b, int c){
 	N4 = R100 / 4;
 	N1 = R100 % 4;
 	lt = 1721426 + N400*146097 + N100* 36524 + N4 * 1461 + N1*365 + tag;
+	}
+	else{emergencyStop(3);}
 	return lt;
 }
 int* Kalenderdatum::lt_to_jul(long int lt){
@@ -302,7 +309,10 @@ long int Kalenderdatum::einlesen_jul(){
 	std::cin >> month_jul;
 	std::cin >> year_jul;
 	std::cout << "\n";
+	if (validdate(day_jul, month_jul, year_jul, "j")==1){
 	lt	=	jul_to_lt(day_jul, month_jul, year_jul);
+	}
+	else{emergencyStop(4);}
 	return lt;
 }
 long int Kalenderdatum::einlesen_greg(){
@@ -313,7 +323,10 @@ long int Kalenderdatum::einlesen_greg(){
 	std::cin >> month_greg;
 	std::cin >> year_greg;
 	std::cout << "\n";
+	if (validdate(day_greg, month_greg, year_greg, "g")==1){
 	lt	=	greg_to_lt(day_greg, month_greg, year_greg);
+	}
+	else{emergencyStop(5);}
 	return lt;
 }
 long int Kalenderdatum::einlesen_lt(){
@@ -355,7 +368,7 @@ void Kalenderdatum::inputform(){
 		case 2 :	lt	=	einlesen_jul();
 				break;
 		case 3 :	lt	=	einlesen_lt(); break;
-		default :	emergencyStop(2);
+		default :	emergencyStop(6);
 		}
 }
 void Kalenderdatum::outputform(){
@@ -371,7 +384,7 @@ void Kalenderdatum::outputform(){
 				ausgabe_jul();
 				break;
 		case 3 : 	ausgabe_lt(); break;
-		default : 	emergencyStop(3);
+		default : 	emergencyStop(7);
 	}
 }
 std::string Kalenderdatum::wochentag(long int lt){
