@@ -22,7 +22,7 @@ public:
 	Kalenderdatum( int lt )		{this->lt = lt;}
 	Kalenderdatum( int , int , int , std::string );
 	Kalenderdatum(const Kalenderdatum &x) { lt=x.lt; }		// Copy Constructor
-	~Kalenderdatum();						// Destructor
+	~Kalenderdatum(){}						// Destructor
 	Kalenderdatum & operator= (const Kalenderdatum &x);		// Assignment Operator
 	
 	
@@ -96,7 +96,7 @@ Kalenderdatum::Kalenderdatum( int a, int b, int c, std::string d){
 	}
 	else { emergencyStop(1); }
 }
-Kalenderdatum::~Kalenderdatum(){}
+
 int Kalenderdatum::get_mk_jul(int b){
 	int mk;
 	switch (b){
@@ -138,31 +138,31 @@ int Kalenderdatum::get_mk_greg(int b){
 int Kalenderdatum::validdate(int a, int b, int c, std::string d){
 	int x = 0;
 	if (c!=0){
-	switch ( b ){
-	case 1  :
-	case 3  :
-	case 5  :
-	case 7  :
-	case 8  :
-	case 10 :
-	case 12 : if ( (a>0) && (a<32) ){x = 1;}
-		else{x = 0;}	break;
-	case 4  :
-	case 6  :
-	case 9  :
-	case 11 : if ( (a>0) && (a<31) ){x = 1;}
-		else{x = 0;}	break;
-	case 2  : if ( d == "j"){
-			if ( ((c<0)&&(c%4==1)) || ((c>0)&&(c%4==0)&&(a>0)&&(a<30))  ){x = 1; std::cout << "case 1.1\n";}
-			else if( (a>0)&&(a<29) ){x = 1; std::cout << "case 1.2\n";}
-			else{x = 0; std::cout << "case 1.3\n";}}
-		else if ( d == "g"){
-			if ( ((c%4==0)&&((c%100!=0)||(c%400==0))) && ((a>0)&&(a<30)) ){x = 1;}
-			else if( (a>0)&&(a<29) ){x = 1;}
-			else{x = 0;}}
-				break;
-	default : x = 0;	break;
-	}
+		switch ( b ){
+		case 1  :
+		case 3  :
+		case 5  :
+		case 7  :
+		case 8  :
+		case 10 :
+		case 12 : if ( (a>0) && (a<32) ){x = 1;}
+			else{x = 0;}	break;
+		case 4  :
+		case 6  :
+		case 9  :
+		case 11 : if ( (a>0) && (a<31) ){x = 1;}
+			else{x = 0;}	break;
+		case 2  : if ( d == "j"){
+				if ( ((c<0)&&(c%4==1)) || ((c>0)&&(c%4==0)&&(a>0)&&(a<30))  ){x = 1; std::cout << "case 1.1\n";}
+				else if( (a>0)&&(a<29) ){x = 1; std::cout << "case 1.2\n";}
+				else{x = 0; std::cout << "case 1.3\n";}}
+			else if ( d == "g"){
+				if ( ((c%4==0)&&((c%100!=0)||(c%400==0))) && ((a>0)&&(a<30)) ){x = 1;}
+				else if( (a>0)&&(a<29) ){x = 1;}
+				else{x = 0;}}
+					break;
+		default : x = 0;	break;
+		}
 	}
 	return x;
 }
