@@ -261,12 +261,6 @@ void Kalenderdatum::inputform(){
 	std::cout << "\n";
 	switch ( decide ){
 		case 1 :	lt	=	einlesen_greg();
-				break;
-		case 2 :	lt	=	einlesen_jul();
-				break;
-		case 3 :	lt	=	einlesen_lt(); break;
-		default :	emergencyStop(2);
-		}
 }
 void Kalenderdatum::outputform(){
 	int decide;
