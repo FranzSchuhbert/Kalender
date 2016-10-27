@@ -36,7 +36,7 @@ Kalenderdatum::Kalenderdatum( int a, int b, int c, std::string d){
 	}
 	else { emergencyStop(1); }
 }
-Kalenderdatum::~Kalenderdatum(){}
+
 int Kalenderdatum::get_mk_jul(int b){
 	int mk;
 	switch (b){
@@ -261,6 +261,7 @@ void Kalenderdatum::inputform(){
 	std::cout << "\n";
 	switch ( decide ){
 		case 1 :	lt	=	einlesen_greg();
+	}
 }
 void Kalenderdatum::outputform(){
 	int decide;
