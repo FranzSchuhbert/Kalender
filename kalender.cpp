@@ -20,21 +20,37 @@ long int operator- (const Kalenderdatum X, const Kalenderdatum Y ){
 
 // Operatoren die auf private Member zugreifen dürfen
 Kalenderdatum Kalenderdatum::operator+ (long int x){
-	lt = lt + x;
+	this->lt = this->lt + x;
 	return *this;
 }
 Kalenderdatum Kalenderdatum::operator- (long int x){
-	lt = lt - x;
+	this->lt = this->lt - x;
 	return *this;
 }
 Kalenderdatum::Kalenderdatum( int a, int b, int c, std::string d){
 	if ( d == "j" ){
-		lt = jul_to_lt(a, b, c);
+		this->lt = jul_to_lt(a, b, c);
 	}
 	else if ( d == "g" ){
-		lt = greg_to_lt(a, b, c);
+		this->lt = greg_to_lt(a, b, c);
 	}
 	else { emergencyStop(1); }
+}
+
+bool Kalenderdatum::validdate(int a, int b, int c, std::string d){
+		if ( (b==1 || b==3 || b==5 || b==7 || b==8 || b==10 || b==12) && a>0 && a<32 ){
+		return true;}
+		else if( (b==4 || b==6 || b==9 || b==11) && a>0 && a<31){
+		return true;}
+		else if( b==2 && a>0 ){
+			if( a<29 ){
+			return true;}
+			else if( d=="g" && ((c%4==0 && c%100!=0) || c%400==0) && a<30 ){
+			return true;}
+			else if( d=="j" && c%4==0 && a<30){
+			return true;}
+		}
+		return false;
 }
 
 int Kalenderdatum::get_mk_jul(int b){
@@ -76,6 +92,7 @@ int Kalenderdatum::get_mk_greg(int b){
 	return mk;
 }
 long int Kalenderdatum::jul_to_lt( int a, int b, int c){
+	if( !validdate(a,b,c, "j")){emergencyStop(11);}
 	//Hilfsvariablen für die Rechnungen
 	int sk, mk, N4, N1, tag, jahr;
 	//Setzt sk auf 1 wenn Schaltjahr und Monat nach Februar liegt
@@ -101,6 +118,7 @@ long int Kalenderdatum::jul_to_lt( int a, int b, int c){
 	return lt;
 }
 long int Kalenderdatum::greg_to_lt(int a, int b, int c){
+	if( !validdate(a,b,c, "g")){emergencyStop(11);}
 	//Hilfsvariablen für die Rechnungen
 	int sk, mk, N400, R400, N100, R100, N1, N4, tag, jahr;
 	//Setzt sk auf 1 wenn Schaltjahr und Monat nach Februar liegt
@@ -212,6 +230,7 @@ long int Kalenderdatum::einlesen_jul(){
 	std::cin >> month_jul;
 	std::cin >> year_jul;
 	std::cout << "\n";
+	if( !validdate(day_jul, month_jul, year_jul, "j")){emergencyStop(11);}
 	lt	=	jul_to_lt(day_jul, month_jul, year_jul);
 	return lt;
 }
@@ -223,6 +242,7 @@ long int Kalenderdatum::einlesen_greg(){
 	std::cin >> month_greg;
 	std::cin >> year_greg;
 	std::cout << "\n";
+	if( !validdate(day_greg, month_greg, year_greg, "g")){emergencyStop(11);}
 	lt	=	greg_to_lt(day_greg, month_greg, year_greg);
 	return lt;
 }
@@ -260,8 +280,13 @@ void Kalenderdatum::inputform(){
 	std::cin >> decide;
 	std::cout << "\n";
 	switch ( decide ){
-		case 1 :	lt	=	einlesen_greg();
-	}
+		case 1 :	this->lt	=	einlesen_greg();
+				break;
+		case 2 :	this->lt	=	einlesen_jul();
+				break;
+		case 3 :	this->lt	=	einlesen_lt(); break;
+		default :	emergencyStop(6);
+		}
 }
 void Kalenderdatum::outputform(){
 	int decide;

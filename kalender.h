@@ -23,7 +23,7 @@ public:
 	Kalenderdatum()			{this->lt = 1;}	
 	Kalenderdatum( int lt )		{this->lt = lt;}
 	Kalenderdatum( int , int , int , std::string );
-	Kalenderdatum(const Kalenderdatum &x) { lt=x.lt; }		// Copy Constructor
+	Kalenderdatum(const Kalenderdatum &x) {this->lt=x.lt; }		// Copy Constructor
 	~Kalenderdatum(){}						// Destructor
 	Kalenderdatum & operator= (const Kalenderdatum &x);		// Assignment Operator
 	
@@ -32,7 +32,7 @@ public:
 	long int tage () const { return this->lt; }			// Access Method
 	int get_mk_jul(int);						// Berechnet Monatskorrektur
 	int get_mk_greg(int);
-	int validdate(int, int, int, std::string);					// Prüft eingegebenes Datum auf Korrektheit
+	bool validdate(int, int, int, std::string);					// Prüft eingegebenes Datum auf Korrektheit
 	/* Umrechnungen zwischen den verschiedenen Kalendern. Erweiterungen um andere Kalender leicht möglich indem man hier einfach 
 	Funktionen einfügt die die jeweiligen Kalender in lt umrechnen und umgekehrt.*/
 	long int jul_to_lt(int, int, int);	
